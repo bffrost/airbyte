@@ -23,12 +23,26 @@
             </ContextMapFilter>
             <PatternLayout pattern="${simple-pattern}"/>
         </Console>
+        <File name="SimpleFile" fileName="/tmp/airbyte_simple-test.log">
+            <ContextMapFilter onMatch="ACCEPT" onMismatch="DENY">
+                <KeyValuePair key="simple" value="true"/>
+            </ContextMapFilter>
+            <PatternLayout pattern="${simple-pattern}"/>
+        </File>
+        <File name="DefaultFile" fileName="/tmp/airbyte_default-test.log">
+            <ContextMapFilter onMatch="DENY" onMismatch="ACCEPT">
+                <KeyValuePair key="simple" value="true"/>
+            </ContextMapFilter>
+            <PatternLayout pattern="${default-pattern}"/>
+        </File>
     </Appenders>
 
     <Loggers>
         <Root level="${log-level}">
             <AppenderRef ref="Default"/>
             <AppenderRef ref="SimpleDefault"/>
+            <AppenderRef ref="SimpleFile"/>
+            <AppenderRef ref="DefaultFile"/>
         </Root>
 
         <Logger name="org.eclipse.jetty" level="INFO" />

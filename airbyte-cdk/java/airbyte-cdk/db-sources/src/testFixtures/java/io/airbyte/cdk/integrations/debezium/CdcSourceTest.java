@@ -394,7 +394,8 @@ public abstract class CdcSourceTest<S extends Source, T extends TestDatabase<?, 
 
   @SuppressWarnings({"BusyWait", "CodeBlock2Expr"})
   @Test
-  @DisplayName("Verify that when data is inserted into the database while a sync is happening and after the first sync, it all gets replicated.")
+  // @DisplayName("Verify that when data is inserted into the database while a sync is happening and
+  // after the first sync, it all gets replicated.")
   protected void testRecordsProducedDuringAndAfterSync() throws Exception {
 
     final int recordsToCreate = 20;
@@ -460,7 +461,8 @@ public abstract class CdcSourceTest<S extends Source, T extends TestDatabase<?, 
   }
 
   @Test
-  @DisplayName("When both incremental CDC and full refresh are configured for different streams in a sync, the data is replicated as expected.")
+  // @DisplayName("When both incremental CDC and full refresh are configured for different streams in
+  // a sync, the data is replicated as expected.")
   void testCdcAndFullRefreshInSameSync() throws Exception {
     final ConfiguredAirbyteCatalog configuredCatalog = Jsons.clone(getConfiguredCatalog());
 
@@ -533,7 +535,7 @@ public abstract class CdcSourceTest<S extends Source, T extends TestDatabase<?, 
   }
 
   @Test
-  @DisplayName("When no records exist, no records are returned.")
+  // @DisplayName("When no records exist, no records are returned.")
   void testNoData() throws Exception {
 
     testdb.with("DELETE FROM %s.%s", modelsSchema(), MODELS_STREAM_NAME);
@@ -552,7 +554,8 @@ public abstract class CdcSourceTest<S extends Source, T extends TestDatabase<?, 
   }
 
   @Test
-  @DisplayName("When no changes have been made to the database since the previous sync, no records are returned.")
+  // @DisplayName("When no changes have been made to the database since the previous sync, no records
+  // are returned.")
   void testNoDataOnSecondSync() throws Exception {
     final AutoCloseableIterator<AirbyteMessage> read1 = source()
         .read(config(), getConfiguredCatalog(), null);
