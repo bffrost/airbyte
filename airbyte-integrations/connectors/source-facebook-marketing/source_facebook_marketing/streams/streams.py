@@ -41,7 +41,7 @@ class AdCreatives(FBMarketingStream):
     """
 
     entity_prefix = "adcreative"
-    enable_deleted = False
+    status_field = "status"
 
     def __init__(self, fetch_thumbnail_images: bool = False, **kwargs):
         super().__init__(**kwargs)
@@ -78,7 +78,6 @@ class CustomConversions(FBMarketingStream):
     """doc: https://developers.facebook.com/docs/marketing-api/reference/custom-conversion"""
 
     entity_prefix = "customconversion"
-    enable_deleted = False
 
     def list_objects(self, params: Mapping[str, Any], account_id: str) -> Iterable:
         return self._api.get_account(account_id=account_id).get_custom_conversions(params=params, fields=self.fields())
@@ -88,7 +87,6 @@ class CustomAudiences(FBMarketingStream):
     """doc: https://developers.facebook.com/docs/marketing-api/reference/custom-audience"""
 
     entity_prefix = "customaudience"
-    enable_deleted = False
     # The `rule` field is excluded from the list because it caused the error message "Please reduce the amount of data" for certain connections.
     # https://github.com/airbytehq/oncall/issues/2765
     fields_exceptions = ["rule"]
@@ -101,6 +99,7 @@ class Ads(FBMarketingIncrementalStream):
     """doc: https://developers.facebook.com/docs/marketing-api/reference/adgroup"""
 
     entity_prefix = "ad"
+    status_field = "effective_status"
 
     def list_objects(self, params: Mapping[str, Any], account_id: str) -> Iterable:
         return self._api.get_account(account_id=account_id).get_ads(params=params, fields=self.fields())
@@ -110,6 +109,7 @@ class AdSets(FBMarketingIncrementalStream):
     """doc: https://developers.facebook.com/docs/marketing-api/reference/ad-campaign"""
 
     entity_prefix = "adset"
+    status_field = "effective_status"
 
     def list_objects(self, params: Mapping[str, Any], account_id: str) -> Iterable:
         return self._api.get_account(account_id=account_id).get_ad_sets(params=params, fields=self.fields())
@@ -119,6 +119,7 @@ class Campaigns(FBMarketingIncrementalStream):
     """doc: https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group"""
 
     entity_prefix = "campaign"
+    status_field = "effective_status"
 
     def list_objects(self, params: Mapping[str, Any], account_id: str) -> Iterable:
         return self._api.get_account(account_id=account_id).get_campaigns(params=params, fields=self.fields())
@@ -153,9 +154,11 @@ class Activities(FBMarketingIncrementalStream):
             # if start_date is not specified then do not use date filters
             return {}
 
-        potentially_new_records_in_the_past = self._include_deleted and not stream_state.get("include_deleted", False)
+        potentially_new_records_in_the_past = self._filter_statuses and (
+            set(self._filter_statuses) - set(stream_state.get("filter_statuses", []))
+        )
         if potentially_new_records_in_the_past:
-            self.logger.info(f"Ignoring bookmark for {self.name} because of enabled `include_deleted` option")
+            self.logger.info(f"Ignoring bookmark for {self.name} because of enabled `filter_statuses` option")
             if self._start_date:
                 since = self._start_date
             else:
@@ -187,7 +190,6 @@ class AdAccount(FBMarketingStream):
     """See: https://developers.facebook.com/docs/marketing-api/reference/ad-account"""
 
     use_batch = False
-    enable_deleted = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

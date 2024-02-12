@@ -67,7 +67,7 @@ class TestBackoff:
         requests_mock.register_uri("GET", FacebookSession.GRAPH + f"/{FB_API_VERSION}/1/", [{"status_code": 200}])
         requests_mock.register_uri("GET", FacebookSession.GRAPH + f"/{FB_API_VERSION}/2/", [{"status_code": 200}])
 
-        stream = Campaigns(api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), include_deleted=False)
+        stream = Campaigns(api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now())
         try:
             records = list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))
             assert records
@@ -111,7 +111,7 @@ class TestBackoff:
         requests_mock.register_uri("GET", FacebookSession.GRAPH + f"/{FB_API_VERSION}/act_{account_id}/", responses)
         requests_mock.register_uri("POST", FacebookSession.GRAPH + f"/{FB_API_VERSION}/", batch_responses)
 
-        stream = AdCreatives(api=api, account_ids=[account_id], include_deleted=False)
+        stream = AdCreatives(api=api, account_ids=[account_id])
         records = list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))
 
         assert records == [
@@ -156,7 +156,7 @@ class TestBackoff:
         )
 
         stream = Campaigns(
-            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), include_deleted=False, page_size=100
+            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), page_size=100
         )
         try:
             list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))
@@ -195,7 +195,7 @@ class TestBackoff:
         )
 
         stream = Activities(
-            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), include_deleted=False, page_size=100
+            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), page_size=100
         )
         try:
             list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))
@@ -222,7 +222,7 @@ class TestBackoff:
             [success],
         )
 
-        stream = Activities(api=api, account_ids=[account_id], start_date=None, end_date=None, include_deleted=False, page_size=100)
+        stream = Activities(api=api, account_ids=[account_id], start_date=None, end_date=None, page_size=100)
         list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))
 
     def test_limit_error_retry_next_page(self, fb_call_amount_data_response, requests_mock, api, account_id):
@@ -245,7 +245,7 @@ class TestBackoff:
         )
 
         stream = Videos(
-            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), include_deleted=False, page_size=100
+            api=api, account_ids=[account_id], start_date=pendulum.now(), end_date=pendulum.now(), page_size=100
         )
         try:
             list(stream.read_records(sync_mode=SyncMode.full_refresh, stream_state={}, stream_slice={"account_id": account_id}))

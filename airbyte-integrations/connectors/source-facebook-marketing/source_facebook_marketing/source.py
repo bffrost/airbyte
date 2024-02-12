@@ -150,7 +150,7 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
+                filter_statuses=config.adset_statuses,
                 page_size=config.page_size,
             ),
             Ads(
@@ -158,11 +158,12 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
+                filter_statuses=config.ad_statuses,
                 page_size=config.page_size,
             ),
             AdCreatives(
                 api=api,
+                filter_statuses=config.adcreative_statuses,
                 account_ids=config.account_ids,
                 fetch_thumbnail_images=config.fetch_thumbnail_images,
                 page_size=config.page_size,
@@ -192,19 +193,17 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
+                filter_statuses=config.campaign_statuses,
                 page_size=config.page_size,
             ),
             CustomConversions(
                 api=api,
                 account_ids=config.account_ids,
-                include_deleted=config.include_deleted,
                 page_size=config.page_size,
             ),
             CustomAudiences(
                 api=api,
                 account_ids=config.account_ids,
-                include_deleted=config.include_deleted,
                 page_size=config.page_size,
             ),
             Images(
@@ -212,7 +211,6 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
                 page_size=config.page_size,
             ),
             Videos(
@@ -220,7 +218,6 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
                 page_size=config.page_size,
             ),
             Activities(
@@ -228,7 +225,6 @@ class SourceFacebookMarketing(AbstractSource):
                 account_ids=config.account_ids,
                 start_date=config.start_date,
                 end_date=config.end_date,
-                include_deleted=config.include_deleted,
                 page_size=config.page_size,
             ),
         ]
