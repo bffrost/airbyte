@@ -15,7 +15,8 @@ application {
     mainClass = 'io.airbyte.integrations.destination.bigquery.BigQueryDestination'
     applicationDefaultJvmArgs = ['-XX:+ExitOnOutOfMemoryError', '-XX:MaxRAMPercentage=75.0',
                                  '-XX:NativeMemoryTracking=detail', '-XX:+UnlockDiagnosticVMOptions',
-                                 '-XX:GCLockerRetryAllocationCount=100', "-Dmicronaut.environments=destination",
+                                 '-XX:GCLockerRetryAllocationCount=100', "-Dmicronaut.environments=connector,destination",
+//            "-Dmicronaut.config.files=secrets/credentials-standard.json",
 //            '-Djava.rmi.server.hostname=localhost',
 //            '-Dcom.sun.management.jmxremote=true',
 //            '-Dcom.sun.management.jmxremote.port=6000',
@@ -33,8 +34,9 @@ dependencies {
     annotationProcessor 'io.micronaut:micronaut-inject-java:4.2.4'
 
     implementation 'info.picocli:picocli:4.7.5'
+    implementation 'io.micronaut:micronaut-runtime:4.3.2'
     implementation 'io.micronaut.picocli:micronaut-picocli:5.2.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'io.micronaut:micronaut-jackson-databind:4.3.2'
 
     // TODO: Pull out common classes into CDK instead of depending on another destination
     implementation project(':airbyte-integrations:connectors:destination-gcs')
@@ -52,10 +54,19 @@ dependencies {
     }
     // implementation ('com.github.airbytehq:json-avro-converter:1.1.0') { exclude group: 'ch.qos.logback', module: 'logback-classic'}
 
-    integrationTestJavaImplementation project(':airbyte-integrations:connectors:destination-bigquery')
-
     // This dependency is required because GCSOperaitons is leaking S3Client interface to the BigQueryDestination.
     implementation libs.aws.java.sdk.s3
+
+    testAnnotationProcessor 'io.micronaut:micronaut-inject-java:4.2.4'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation 'io.micronaut.test:micronaut-test-junit5:4.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+
+    integrationTestJavaAnnotationProcessor 'io.micronaut:micronaut-inject-java:4.2.4'
+
+    integrationTestJavaImplementation 'io.micronaut.test:micronaut-test-junit5:4.2.0'
+    integrationTestJavaImplementation project(':airbyte-integrations:connectors:destination-bigquery')
 }
 
 configurations.all {

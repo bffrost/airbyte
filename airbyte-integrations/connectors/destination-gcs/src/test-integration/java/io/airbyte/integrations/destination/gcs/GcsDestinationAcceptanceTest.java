@@ -240,7 +240,7 @@ public abstract class GcsDestinationAcceptanceTest extends DestinationAcceptance
     ((ObjectNode) baseJson).put("credential", credential);
     ((ObjectNode) baseJson).set("format", getFormatConfig());
 
-    final GcsDestination destination = new GcsDestination();
+    final GcsDestination destination = new GcsDestination(new GcsNameTransformer());
     final AirbyteConnectionStatus status = destination.check(baseJson);
     assertEquals(AirbyteConnectionStatus.Status.FAILED, status.getStatus());
     assertTrue(status.getMessage().contains("State code: SignatureDoesNotMatch;"));
@@ -258,7 +258,7 @@ public abstract class GcsDestinationAcceptanceTest extends DestinationAcceptance
     ((ObjectNode) baseJson).put("credential", credential);
     ((ObjectNode) baseJson).set("format", getFormatConfig());
 
-    final GcsDestination destination = new GcsDestination();
+    final GcsDestination destination = new GcsDestination(new GcsNameTransformer());
     final AirbyteConnectionStatus status = destination.check(baseJson);
     assertEquals(AirbyteConnectionStatus.Status.FAILED, status.getStatus());
     assertTrue(status.getMessage().contains("State code: SignatureDoesNotMatch;"));
@@ -270,7 +270,7 @@ public abstract class GcsDestinationAcceptanceTest extends DestinationAcceptance
     ((ObjectNode) baseJson).put("gcs_bucket_name", "fake_bucket");
     ((ObjectNode) baseJson).set("format", getFormatConfig());
 
-    final GcsDestination destination = new GcsDestination();
+    final GcsDestination destination = new GcsDestination(new GcsNameTransformer());
     final AirbyteConnectionStatus status = destination.check(baseJson);
     assertEquals(AirbyteConnectionStatus.Status.FAILED, status.getStatus());
     assertTrue(status.getMessage().contains("State code: NoSuchKey;"));

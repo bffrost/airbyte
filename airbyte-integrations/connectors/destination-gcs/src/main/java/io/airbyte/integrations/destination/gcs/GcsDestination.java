@@ -25,6 +25,7 @@ import io.airbyte.protocol.models.v0.AirbyteConnectionStatus.Status;
 import io.airbyte.protocol.models.v0.AirbyteMessage;
 import io.airbyte.protocol.models.v0.ConfiguredAirbyteCatalog;
 import java.util.function.Consumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,14 @@ public class GcsDestination extends BaseConnector implements Destination {
 
   private final NamingConventionTransformer nameTransformer;
 
-  public GcsDestination() {
-    this.nameTransformer = new GcsNameTransformer();
+  public GcsDestination(final NamingConventionTransformer nameTransformer) {
+    this.nameTransformer = nameTransformer;
   }
 
   public static void main(final String[] args) throws Exception {
     System.setProperty(SkipMd5CheckStrategy.DISABLE_GET_OBJECT_MD5_VALIDATION_PROPERTY, "true");
     System.setProperty(SkipMd5CheckStrategy.DISABLE_PUT_OBJECT_MD5_VALIDATION_PROPERTY, "true");
-    new IntegrationRunner(new GcsDestination()).run(args);
+    new IntegrationRunner(new GcsDestination(new GcsNameTransformer())).run(args);
   }
 
   @Override
