@@ -75,7 +75,7 @@
       },
       "spreadsheet_id": {
         "title": "Sheet ID",
-        "description": "The spreadsheet ID. Find it by opening the spreadsheet then navigating to File > Properties",
+        "description": "The spreadsheet or report ID. Find it by opening the spreadsheet then navigating to File > Properties. For reports, toggle the optional 'Is Report' setting below to true.",
         "type": "string",
         "order": 1
       },
