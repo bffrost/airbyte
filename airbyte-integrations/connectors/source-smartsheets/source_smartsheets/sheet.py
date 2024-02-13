@@ -47,9 +47,16 @@ class SmartSheetAPIWrapper:
         if self.is_report:
             # Reports cannot be fetched with "rows_modified_since" parameter
             kwargs.pop("rows_modified_since")
-            # TODO remove or fix pagination
-            kwargs["page_size"] = 1000
+            # Reports do not support incremental sync, so fetch results in larger pages and implement pagination
+            kwargs["page_size"] = 100
+            page = 1
             self._data = self._get_report(self._spreadsheet_id, include=["rowPermalink", "writerInfo"], **kwargs)
+            rows_fetched = len(self._data.rows)
+            while rows_fetched < self._data.total_row_count:
+                page += 1
+                kwargs["page"] = page
+                self._data.rows.extend(self._get_report(self._spreadsheet_id, include=["rowPermalink", "writerInfo"], **kwargs).rows)
+                rows_fetched = len(self._data.rows)
         else:
             self._data = self._get_sheet(self._spreadsheet_id, include=["rowPermalink", "writerInfo"], **kwargs)      
 
